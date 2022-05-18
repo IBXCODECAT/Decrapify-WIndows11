@@ -1,7 +1,8 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System; //For basic console behaviour
+using System.Diagnostics; //For process stuff
+using System.IO; //For checking if a file exists and handling the filesystem
 
-using IBX_Plugins.WindowsUtilities;
+using IBX_Plugins.WindowsUtilities; //For handling Popup boxes
 
 namespace Decrapify_Windows11
 {
@@ -20,21 +21,28 @@ namespace Decrapify_Windows11
         /// <returns>The exit code provided by the executable if availible</returns>
         private static int StartProcess(string path)
         {
-            try
+            if(File.Exists(path))
             {
-                Process process = new Process();
-                process.StartInfo.FileName = path;
-                process.EnableRaisingEvents = true;
+                try
+                {
+                    Process process = new Process();
+                    process.StartInfo.FileName = path;
+                    process.EnableRaisingEvents = true;
 
-                process.Start(); //Invoke..
+                    process.Start(); //Invoke..
 
-                process.WaitForExit();
+                    process.WaitForExit();
 
-                return process.ExitCode;
+                    return process.ExitCode;
+                }
+                catch
+                {
+                    Popup.CreatePopup("Failed to Invoke Process", "The application failed to invoke the process `" + path + "` due to an exception.", Popup.Options.ok, Popup.Icons.error);
+                }
             }
-            catch
+            else
             {
-                Popup.CreatePopup("Failed to execute command", "The application failed to run the command `" + path + "` because the application 'cmd.exe' could not be found.", Popup.Options.ok, Popup.Icons.error);
+                Popup.CreatePopup("Failed to Invoke Process", "The application failed to invoke the process `" + path + "` because it does not exist.", Popup.Options.ok, Popup.Icons.error);
             }
 
             return -1;
