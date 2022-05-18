@@ -9,7 +9,7 @@ namespace IBX_Plugins.WindowsUtilities
     /// </summary>
     public static class Popup
     {
-        public struct interupt
+        public struct Interupt
         {
             public static long app = 0x00000000L;
             public static long sys = 0x00001000L;
@@ -17,6 +17,18 @@ namespace IBX_Plugins.WindowsUtilities
             public static long help = 0x00004000L;
         }
 
+        public struct Responses
+        {
+            public static int Ok = 1;
+            public static int Cancel = 2;
+            public static int Abort = 3;
+            public static int Retry = 4;
+            public static int Ignore = 5;
+            public static int Yes = 6;
+            public static int No = 7;
+            public static int TryAgain = 10;
+            public static int Continue = 11;
+        }
         public struct Icons
         {
             public static long error = 0x00000010L;
