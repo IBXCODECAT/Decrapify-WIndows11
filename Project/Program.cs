@@ -10,8 +10,12 @@ namespace Decrapify_Windows11
     {
         private struct Settings
         {
-            public static bool allowRegistryEdits = false;
             public static bool allowChangesSystemSettings = false;
+            public static bool allowChangesPrivacySettings = false;
+            public static bool allowChangesUserSettings = false;
+
+            public static bool allowRegistryEdits = false;
+            public static bool allowUninstall = false;
         }
 
         static void Main(string[] args)
@@ -23,17 +27,39 @@ namespace Decrapify_Windows11
 
         private static void GetPermissions()
         {
-            Console.Write("Requesting Permission to Change System Settings...");
-            int allowChangesSystemSettings = Popup.CreatePopup("Allow Changes to System Settings?", "Allowing changes to system settings will allow 'Decrapify_Windows11' to modify user level system settings.\n\nWould you like to allow changes to system settings?", Popup.Options.yesNo, Popup.Icons.querry);
-            Settings.allowChangesSystemSettings = allowChangesSystemSettings == Popup.Responses.Yes;
-            if (Settings.allowChangesSystemSettings) Console.WriteLine(" | Permission Granted!"); else Console.WriteLine(" | Permission Denied!");
+            Console.Write("Allow 'Decrapify_Windows11' to change system-wide settings?");
+            Settings.allowChangesSystemSettings = Ask();
 
-            Console.Write("Requesting Permission to Edit Registry...");
-            int allowRegistryEdits = Popup.CreatePopup("Allow Registry Editing?", "Registry editing will allow 'Decrapify_Windows11' to change advanced and unacessible system settings; However the edits to the registry could cause unexpected behaviour and are irreversable by this program.\n\nAre you sure you want to allow registry edits?", Popup.Options.yesNo, Popup.Icons.warn);
-            Settings.allowRegistryEdits = allowRegistryEdits == Popup.Responses.Yes;
-            if (Settings.allowRegistryEdits) Console.WriteLine(" | Permission Granted!"); else Console.WriteLine(" | Permission Denied!");
+            Console.Write("Allow 'Decrapify_Windows11' to change user specific settings?");
+            Settings.allowChangesUserSettings = Ask();
+
+            Console.Write("Allow 'Decrapify_Windows11' to change privacy settings?");
+            Settings.allowChangesPrivacySettings = Ask();
+
+            Console.Write("Allow 'Decrapify_Windows11' to make changes to the registry?");
+            if (Ask())
+            {
+                int allowRegistryEdits = Popup.CreatePopup("Allow Registry Editing?", "Registry editing will allow 'Decrapify_Windows11' to change advanced and unacessible system settings; However the edits to the registry could cause unexpected behaviour and are irreversable by this program.\n\nAre you sure you want to allow registry edits?", Popup.Options.yesNo, Popup.Icons.warn);
+                Settings.allowRegistryEdits = allowRegistryEdits == Popup.Responses.Yes;
+            }
+
+            Console.Write("Allow 'Decrapify_Windows11' to uninstall applications on this device?");
+            if(Ask())
+            {
+                int allowUninstall = Popup.CreatePopup("Allow Uninstalling of Applications?", "Uninstalling applications will allow 'Decrapify_Windows11' to remove bloatware on your system; However once the programs are uninstalled you will have to download them again!.\n\nAre you sure you want to allow the uninstalling of applications?", Popup.Options.yesNo, Popup.Icons.warn);
+                Settings.allowRegistryEdits = allowUninstall == Popup.Responses.Yes;
+            }
 
         }
+
+        private static bool Ask()
+        {
+            Console.Write("(Y/N): ");
+            string ans = Console.ReadLine();
+
+            return ans.ToLower().Equals("y");
+        }
+
         /// <summary>
         /// Starts the process at the path provided
         /// </summary>
