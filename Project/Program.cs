@@ -21,7 +21,6 @@ namespace Decrapify_Windows11
         static void Main(string[] args)
         {
             GetPermissions();
-            StartProcess("notepad.exe");
             Console.Read();
         }
 
@@ -49,15 +48,20 @@ namespace Decrapify_Windows11
                     int allowRegistryEdits = Popup.CreatePopup("Allow Registry Editing?", "Registry editing will allow 'Decrapify_Windows11' to change advanced and unacessible system settings; However the edits to the registry could cause unexpected behaviour and are irreversable by this program.\n\nAre you sure you want to allow registry edits?", Popup.Options.yesNo, Popup.Icons.warn);
                     Settings.allowRegistryEdits = allowRegistryEdits == Popup.Responses.Yes;
                 }
+                else Settings.allowRegistryEdits = false;
 
                 Console.Write("Allow 'Decrapify_Windows11' to uninstall applications on this device?");
+                
                 if (Ask())
                 {
                     int allowUninstall = Popup.CreatePopup("Allow Uninstalling of Applications?", "Uninstalling applications will allow 'Decrapify_Windows11' to remove bloatware on your system; However once the programs are uninstalled you will have to download them again!.\n\nAre you sure you want to allow the uninstalling of applications?", Popup.Options.yesNo, Popup.Icons.warn);
-                    Settings.allowRegistryEdits = allowUninstall == Popup.Responses.Yes;
+                    Settings.allowUninstall = allowUninstall == Popup.Responses.Yes;
                 }
-                
-                Console.WriteLine("You have given 'Decrapify_Windows11' the following permissions:");
+                else Settings.allowUninstall = false;
+
+                Console.Clear();
+
+                Console.WriteLine("You have given 'Decrapify_Windows11' the following permissions:\n");
                 Console.WriteLine("Allow changes to system wide settings   | " + Settings.allowChangesSystemSettings);
                 Console.WriteLine("Allow changes to privacy settings       | " + Settings.allowChangesPrivacySettings);
                 Console.WriteLine("Allow changes to user specific settings | " + Settings.allowChangesUserSettings);
@@ -66,8 +70,14 @@ namespace Decrapify_Windows11
                 Console.Write("\nIs this correct: ");
                 unset = !Ask();
             }
+
+            Console.Clear();
         }
 
+        /// <summary>
+        /// Asks a (Y/N) question in the console
+        /// </summary>
+        /// <returns>A boolean representing the answer given</returns>
         private static bool Ask()
         {
             Console.Write("(Y/N): ");
